@@ -10,8 +10,6 @@ use App\Comunity;
 class NoteController extends Controller
 {
     public function index(Request $request){
-        dd($request->header('token'), env('SECRET_TOKEN'));
-
         if($request->header('token') == env('SECRET_TOKEN')){
 
             $messages = [];
