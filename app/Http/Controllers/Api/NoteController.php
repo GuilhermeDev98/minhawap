@@ -10,9 +10,7 @@ use App\Comunity;
 class NoteController extends Controller
 {
     public function index(Request $request){
-        if($request->header('token') == env('SECRET_TOKEN')){
-
-            $messages = [];
+        $messages = [];
             $comunities = Comunity::where('active', true)->with(['notes'])->get();
             foreach ($comunities as $comunity) {
                 foreach ($comunity->notes as $note) {
@@ -20,8 +18,6 @@ class NoteController extends Controller
                 }
             }
     
-            return response()->json($messages);
-        }
-        return abort(403);
+        return response()->json($messages);
     }
 }
