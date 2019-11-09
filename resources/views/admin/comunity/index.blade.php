@@ -12,7 +12,7 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header">
-            <a class="btn btn-primary btn-round text-white pull-right" href="{{ route('user.create') }}"><i class="fa fa-plus"></i></a>
+            <a class="btn btn-primary btn-round text-white pull-right" href="{{ route('admin.comunity.create') }}"><i class="fa fa-plus"></i></a>
             <h4 class="card-title">{{ __('Comunidades') }}</h4>
           </div>
           <div class="card-body">
@@ -36,7 +36,7 @@
                     @forelse ($comunities as $comunity)
                         <tr>
                             <td>
-                                <a href="{{route('comunity.show', $comunity->id)}}">
+                                <a href="{{route('admin.comunity.show', $comunity->id)}}">
                                 {{$comunity->name}}
                                 </a>
                             </td>
@@ -48,7 +48,7 @@
 
                                     @case(0)
                                         Inativa
-                                        @break    
+                                        @break
                                     @default
                                         Erro
 
@@ -97,10 +97,20 @@
                                 </a>
                             </td>
                             <td>
-                                <a class="btn btn-success btn-sm text-white" href="{{ route('user.create') }}"><i class="fa fa-chart-line"></i></a>                      
-                                <a class="btn btn-primary btn-sm text-white" href="{{ route('user.create') }}"><i class="fa fa-eye"></i></a>
-                                <a class="btn btn-warning btn-sm text-white" href="{{ route('user.create') }}"><i class="fa fa-edit"></i></a>
-                                <a class="btn btn-danger btn-sm text-white" href="{{ route('user.create') }}"><i class="fa fa-trash"></i></a>
+                              <a class="btn btn-success btn-sm text-white" href="{{ route('comunity.show', $comunity->id) }}"><i class="fa fa-eye"></i></a>
+                              <a class="btn btn-warning btn-sm text-white" href="{{ route('admin.comunity.edit', $comunity->id) }}"><i class="fa fa-edit"></i></a>
+                                @if($comunity->active)
+                                    <a class="btn btn-danger btn-sm text-white" href="{{ route('admin.comunity.cancel', $comunity->id) }}"><i class="fa fa-trash"></i></a>
+                                @else
+                                @if($comunity->status == 'WA')
+                                  <a class="btn btn-info btn-sm text-white" href="{{ route('admin.comunity.aprove', $comunity->id) }}"><i class="fa fa-check"></i></a>
+                                  <a class="btn btn-danger btn-sm text-white" href="{{ route('admin.comunity.reprove', $comunity->id) }}"><i class="fa fa-times"></i></a>
+                                @elseif($comunity->status == 'AF')
+                                  <a class="btn btn-info btn-sm text-white" href="{{ route('admin.comunity.aprove', $comunity->id) }}"><i class="fa fa-check"></i></a>
+                                @elseif($comunity->status == 'CC' || $comunity->status == 'SP')
+                                  <a class="btn btn-info btn-sm text-white" href="{{ route('admin.comunity.restore', $comunity->id) }}"><i class="fa fa-sync"></i></a>
+                                @endif
+                              @endif
                             </td>
                         </tr>
                     @empty

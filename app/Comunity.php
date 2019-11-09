@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Comunity extends Model
 {
     protected $fillable = [
-        'name', 'link', 'active', 'status', 'user_id', 'disk_space', 'sms'
+        'name', 'link', 'active', 'status', 'user_id', 'plan_id', 'due_date'
     ];
 
     public function user(){
@@ -16,5 +16,13 @@ class Comunity extends Model
 
     public function notes(){
         return $this->hasMany('App\Note');
+    }
+
+    public function plan(){
+        return $this->belongsTo('App\Plan');
+    }
+
+    public function offers(){
+        return $this->belongsToMany('App\Offer', 'comunity_offers');
     }
 }

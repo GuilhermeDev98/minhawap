@@ -15,11 +15,16 @@ class UsersTableSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'Guilherme Santos',
             'email' => 'guilhermedev@hotmail.com',
+            'cpf' => '84611006549',
+            'cel' => '79999042394',
             'email_verified_at' => now(),
-            'password' => Hash::make('locilocilogunede1998@A'),
+            'cpf_verified_at' => now(),
+            'password' => Hash::make('secret'),
             'status' => 'admin',
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+        factory(App\User::class, 5)->create();
     }
 }

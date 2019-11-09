@@ -17,11 +17,18 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('email_secondary')->unique()->nullable();
+            $table->string('cpf')->unique();
+            $table->string('cel')->unique();
+            $table->string('address')->nullable();
+            $table->timestamp('cpf_verified_at')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('cel_verified_at')->nullable();
             $table->string('password');
-            $table->enum('status', ['admin', 'user', 'collaborator']);
+            $table->enum('status', ['admin', 'user', 'collaborator'])->default('user');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

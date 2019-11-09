@@ -15,10 +15,10 @@ class Role
      */
     public function handle($request, Closure $next, $role)
     {
-        if (! $request->user()->status == $role) {
-            return abort(403, 'Unauthorized action.');
+        if ($request->user()->status == $role) {
+            return $next($request);
         }
 
-        return $next($request);
+        return abort(403, 'Unauthorized action.');
     }
 }

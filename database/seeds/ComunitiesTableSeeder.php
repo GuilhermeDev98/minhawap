@@ -15,9 +15,11 @@ class ComunitiesTableSeeder extends Seeder
         Comunity::create([
             'name' => 'EvolutionWap',
             'link' => 'https://evolutionwap.herokuapp.com',
-            'active' => 1,
-            'status' => 'OA',
-            'user_id' => 1
+            'active' => 0,
+            'status' => 'WA',
+            'user_id' => 1,
+            'plan_id' => 2,
+            'due_date' => '10'
         ]);
     }
 }

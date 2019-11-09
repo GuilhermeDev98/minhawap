@@ -17,8 +17,12 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             UsersTableSeeder::class,
+            OffersTableSeeder::class,
+            PlansTableSeeder::class,
             ComunitiesTableSeeder::class,
             NotesTableSeeder::class,
+            OffersPlansTableSeeder::class,
+            InvoicesTableSeeder::class,
         ]);
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
