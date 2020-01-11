@@ -22,7 +22,7 @@ $factory->define(User::class, function (Faker $faker) {
         'email' => $faker->unique()->safeEmail,
         'email_secondary' => $faker->unique()->safeEmail,
         'cpf' => $faker->numberBetween(00000000000, 99999999999),
-        'cel' => $faker->regexify("^[1-9]{2}(?:[2-8]|9[1-9])[0-9]{3}[0-9]{4}$"),
+        'cel' => $faker->regexify("^[1-9]{2}?9[1-9][0-9]{3}[0-9]{4}$"),
         'address' => $faker->address,
         'status' => $faker->randomElement(['user', 'collaborator']),
         'email_verified_at' => now(),

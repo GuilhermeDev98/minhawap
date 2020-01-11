@@ -19,7 +19,8 @@ class ComunitiesTableSeeder extends Seeder
             'status' => 'WA',
             'user_id' => 1,
             'plan_id' => 2,
-            'due_date' => '10'
+            'due_date' => '10',
+            'billing_cycle' => '1'
         ]);
     }
 }

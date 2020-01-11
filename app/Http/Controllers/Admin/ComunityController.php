@@ -35,6 +35,7 @@ class ComunityController extends Controller
 
     public function store(Request $request){
         $request['status'] = 'WA';
+        $request['billing_cycle'] = 1;
         $comunity = Comunity::create($request->except('_token'));
         $comunity->plan()->associate($request->plan_id);
         return view('admin.comunity.show')->with('comunity', $comunity);
@@ -62,7 +63,7 @@ class ComunityController extends Controller
     public function aprove(Comunity $comunity){
         if($comunity->plan->type == 'free'){
             $message = 'Ola '.explode(' ', $comunity->user->name)[0].' sua solicitacao de ativação da comunidade '.$comunity->name.' foi aprovada, para mais informacoes, verifique o email enviado ! Atenciosamente, MinhaWap.tk !';
-            SmsService::sendMessage($comunity->user->cel, $message);
+            //SmsService::sendMessage($comunity->user->cel, $message);
             $comunity->update([
                 'active' => false,
                 'status' => 'RD'
@@ -81,10 +82,11 @@ class ComunityController extends Controller
                     'status' => 'WA'
                 ]);
                 $message = 'Ola '.explode(' ', $comunity->user->name)[0].' sua solicitacao de ativação da comunidade '.$comunity->name.' foi aprovada, para mais informacoes, verifique o email enviado ! Atenciosamente, MinhaWap.tk !';
-                SmsService::sendMessage($comunity->user->cel, $message);
+                //SmsService::sendMessage($comunity->user->cel, $message);
                 return redirect()->route('admin.comunity.show', $comunity->id)->with('status', 'Comunidade Aprovada Com Sucesso !');
 
             }catch (\Exception $e){
+                    dd($e);
 
                 if ($e instanceof ClientException) {
                     $invoice->delete();
@@ -149,31 +151,30 @@ class ComunityController extends Controller
         try {
 
             $today = CarbonImmutable::createFromTimeString('00:00:00', 'America/Sao_Paulo');
-            $billingDay = CarbonImmutable::create($today->year, $today->month, $comunity->due_date, 0, 0, 0, 'America/Sao_Paulo');
+            $billingDay = CarbonImmutable::create($today->year, $today->month, $comunity->billing_cycle, 0, 0, 0, 'America/Sao_Paulo');
 
-            if ($today == $billingDay) {
+            if ($today == $billingDay OR $billingDay->isPast()) {
                 $totalDays = $today->diffInDays($billingDay->addMonth());
             } else {
-                if ($billingDay->isPast()) {
-                    $totalDays = $today->diffInDays($billingDay->addMonth());
-                }
-                if ($billingDay->isFuture()) {
-                    $totalDays = $today->diffInDays($billingDay);
-                }
+                $totalDays = $today->diffInDays($billingDay);
             }
 
             $daysInCurrentMonth = $billingDay->daysInMonth;
-
+            $proportionalOrTotal = "proporcional";
             $planPrice = $comunity->plan->value;
             $valueDaily = money_format('%n', ($planPrice / $daysInCurrentMonth));
             $proportionalValue = money_format('%n', $totalDays * $valueDaily);
+            if($proportionalValue > $planPrice){
+                $proportionalValue = $planPrice;
+                $proportionalOrTotal = "total";
+            }
             $daysOrDay = ($totalDays == 1) ? 'Dia' : 'Dias';
 
             return Invoice::create([
                 'reference' => (string) Str::uuid(),
                 'value' => $proportionalValue + 2.30,
                 'status' => 'AWAITING_PAYMENT',
-                'description' => 'Período Faturado : ' . $today->format('d/m/Y') . ' até ' . $billingDay->format('d/m/Y') . ' Data de Vencimento ' . $today->addDays(3)->format('d/m/Y') . ' Taxa de Ativação R$ 2,30 + valor Propocional de ' . $totalDays . ' ' . $daysOrDay . ' do ' . $comunity->plan->name_descriptive . ' R$' . $comunity->plan->value,
+                'description' => 'Período Faturado : ' . $today->format('d/m/Y') . ' até ' . $billingDay->format('d/m/Y') . ' Data de Vencimento ' . $today->addDays(3)->format('d/m/Y') . ' Taxa de Ativação R$ 2,30 + valor '. $proportionalOrTotal .' de ' . $totalDays . ' ' . $daysOrDay . ' do ' . $comunity->plan->name_descriptive . ' R$' . $proportionalValue,
                 'due_date' => $today->addDays(3),
                 'comunity_id' => $comunity->id
             ]);

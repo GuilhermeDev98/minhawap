@@ -19,6 +19,7 @@ class CreateComunitiesTable extends Migration
             $table->string('link');
             $table->boolean('active')->default(0);
             $table->enum('status', ['WA', 'AF', 'AP', 'RD', 'SS', 'OA', 'SP', 'CC'])->default('WA');
+            $table->integer('billing_cycle');
             $table->integer('due_date');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');

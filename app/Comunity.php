@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Comunity extends Model
 {
     protected $fillable = [
-        'name', 'link', 'active', 'status', 'user_id', 'plan_id', 'due_date'
+        'name', 'link', 'active', 'status', 'user_id', 'plan_id', 'due_date', 'billing_cycle'
     ];
 
     public function user(){
